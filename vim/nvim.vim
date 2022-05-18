@@ -69,6 +69,9 @@ set lazyredraw
 " Set utf8 as standard encoding and en_US as the standard language
 set encoding=utf8
 
+" add Alt+Backspace to delete a word in insert mode
+imap <M-BS> <C-W>
+
 " Configure backspace so it acts as it should act
 set backspace=eol,start,indent
 set whichwrap+=<,>,h,l
