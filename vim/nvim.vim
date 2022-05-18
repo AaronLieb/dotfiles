@@ -93,7 +93,11 @@ call plug#begin('~/.config/nvim/plugged')
 Plug 'psliwka/vim-smoothie'
 Plug 'sbdchd/neoformat'
 Plug 'preservim/nerdtree'
+"Plug 'numToStr/Comment.nvim'
 call plug#end()
+
+" Setup comments
+"lua require('Comment').setup()
 
 " Autoformat on save 
 autocmd BufWritePre *.js,*.ts,*.html,*.css Neoformat
