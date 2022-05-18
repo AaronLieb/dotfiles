@@ -25,7 +25,7 @@ added additional plugins to the vim configuration
 Pretty barebones for now, only sets vim as default text editor
 
 ## zsh
-Uses (oh my zsh!)[https://ohmyz.sh/] with the `cypher` theme.
+Uses [oh my zsh!](https://ohmyz.sh/) with the `cypher` theme.
 
 ## Recommendations 
 ### Mac
