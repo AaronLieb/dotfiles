@@ -19,6 +19,8 @@ set tabstop=2
 set softtabstop=2
 set shiftwidth=2
 
+set scrolloff=2
+
 " converts tabs to spaces
 set expandtab
 
