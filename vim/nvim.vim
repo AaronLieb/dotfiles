@@ -1,6 +1,3 @@
-" ~/.vim/colors/molokai.vim
-colorscheme molokai
-
 " Sets how many lines of history VIM has to remember
 set history=500
 
@@ -51,6 +48,7 @@ set magic
 set wildmenu
 
 " remap 0 to start at beginning of code instead of beginning of line
+noremap ) 0
 noremap 0 ^
 
 " show current position
@@ -89,25 +87,55 @@ endif
 set laststatus=2
 
 " Format the status line
-set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l\ \ Column:\ %c
-
+set statusline=\ %HasPaste()%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l\ \ Column:\ %c
 
 call plug#begin('~/.config/nvim/plugged')
+" Smooths page scrolling
 Plug 'psliwka/vim-smoothie'
-Plug 'sbdchd/neoformat'
+
+" Adds a file tree
 Plug 'preservim/nerdtree'
-"Plug 'numToStr/Comment.nvim'
+
+" More movement/motion utilities. Currently only use for global find char
+Plug 'easymotion/vim-easymotion'
+
+" Shows lines in diff 
+Plug 'airblade/vim-gitgutter'
+
+" Comment out lines
+Plug 'tpope/vim-commentary'
+
+" AutoMatch () {} []
+Plug 'jiangmiao/auto-pairs'
+
+" Live preview of markdown in the browser
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
+
+" Better syntax highlighting
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+
+" Add, change, delete surrouding characters
+Plug 'tpope/vim-surround'
+
+" Shows values in registers
+Plug 'junegunn/vim-peekaboo'
+
+" Closes html tags
+Plug 'alvan/vim-closetag'
+
 call plug#end()
 
 " Setup comments
 "lua require('Comment').setup()
 
-" Autoformat on save 
-autocmd BufWritePre *.js,*.ts,*.html,*.css Neoformat
+" EasyMotion
+let g:EasyMotion_smartcase = 1
+map s <Plug>(easymotion-bd-f)
+
 
 " Nerd Tree keybindings
 noremap <C-k> :NERDTreeFocus<cr>
-noremap <C-n> :NERDTreeToggle<cr>
+noremap <Tab> :NERDTreeToggle<cr>
 
 " Helpers
 
