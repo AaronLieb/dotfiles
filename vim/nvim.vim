@@ -105,7 +105,7 @@ Plug 'easymotion/vim-easymotion'
 Plug 'airblade/vim-gitgutter'
 
 " Comment out lines
-Plug 'tpope/vim-commentary'
+"Plug 'tpope/vim-commentary'
 
 " AutoMatch () {} []
 Plug 'jiangmiao/auto-pairs'
@@ -125,6 +125,12 @@ Plug 'junegunn/vim-peekaboo'
 " Closes html tags
 Plug 'alvan/vim-closetag'
 
+" shows an undo tree
+Plug 'mbbill/undotree'
+
+" Better 'w' 
+Plug 'chaoren/vim-wordmotion'
+
 call plug#end()
 
 " Setup comments
@@ -134,10 +140,23 @@ call plug#end()
 let g:EasyMotion_smartcase = 1
 map s <Plug>(easymotion-bd-f)
 
-
 " Nerd Tree keybindings
 noremap <C-k> :NERDTreeFocus<cr>
 noremap <Tab> :NERDTreeToggle<cr>
+
+" auto pairs
+let g:AutoPairs = {'(':')', '[':']', '{':'}'}
+
+" Undo tree keybindings
+nnoremap qu :UndotreeToggle<CR>
+
+" change W,E to original w,e since vim-wordmotion changes w,e
+onoremap iW iw
+onoremap iE ie
+onoremap aW aw
+onoremap aE ae
+noremap W w
+noremap E e
 
 " Helpers
 
