@@ -1,6 +1,15 @@
 " Sets how many lines of history VIM has to remember
 set history=500
 
+if $TERM == "xterm-256color"
+  set t_Co=256
+endif
+
+set termguicolors
+
+
+set undofile
+
 " Syntax highlighting
 syntax on
 
@@ -88,9 +97,6 @@ endif
 " Always show the status line
 set laststatus=2
 
-" Format the status line
-set statusline=\ %HasPaste()%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l\ \ Column:\ %c
-
 call plug#begin('~/.config/nvim/plugged')
 " Smooths page scrolling
 Plug 'psliwka/vim-smoothie'
@@ -103,9 +109,6 @@ Plug 'easymotion/vim-easymotion'
 
 " Shows lines in diff 
 Plug 'airblade/vim-gitgutter'
-
-" Comment out lines
-"Plug 'tpope/vim-commentary'
 
 " AutoMatch () {} []
 Plug 'jiangmiao/auto-pairs'
@@ -131,10 +134,31 @@ Plug 'mbbill/undotree'
 " Better 'w' 
 Plug 'chaoren/vim-wordmotion'
 
+" screencast keystrokes
+Plug 'kdheepak/keystrokes.nvim'
+
+" Status bar
+Plug 'itchyny/lightline.vim'
+
+" Commenting
+Plug 'tomtom/tcomment_vim'
+
+" Theme
+Plug 'joshdick/onedark.vim'
+
 call plug#end()
 
-" Setup comments
-"lua require('Comment').setup()
+let g:onedark_termcolors=256
+
+" Status bar settings
+let g:lightline = {
+      \ 'colorscheme': 'wombat', 
+      \ 'active': {
+      \ 'right': [ [ 'lineinfo' ], [ 'percent' ],
+      \            [ 'filetype', ] ]
+      \ },
+      \ }
+set noshowmode
 
 " EasyMotion
 let g:EasyMotion_smartcase = 1
@@ -143,6 +167,7 @@ map s <Plug>(easymotion-bd-f)
 " Nerd Tree keybindings
 noremap <C-k> :NERDTreeFocus<cr>
 noremap <Tab> :NERDTreeToggle<cr>
+noremap <C-i> <C-i>
 
 " auto pairs
 let g:AutoPairs = {'(':')', '[':']', '{':'}'}
@@ -208,3 +233,18 @@ function! VisualSelection(direction, extra_filter) range
     let @/ = l:pattern
     let @" = l:saved_reg
 endfunction
+
+function! Fthenr()
+  echon "Character to find: "
+  let fnd = getchar()
+  execute "normal f".nr2char(fnd)
+  echon "Character to replace: "
+  let rep = getchar()
+  execute "normal r".nr2char(rep)
+endfunction
+
+nnoremap R :call Fthenr()<cr>
+
+colorscheme onedark
+
+lua require'nvim-treesitter.configs'.setup{highlight={enable=true}}
