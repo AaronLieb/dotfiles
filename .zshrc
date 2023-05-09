@@ -8,6 +8,7 @@ fi
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 export PATH=$HOME/.cargo/bin:$PATH
+export PATH=/home/alieb/.local/bin/:$PATH
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
@@ -111,6 +112,10 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
+alias v="lvim"
+alias vim="lvim"
+alias nvim="lvim"
+
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 source /usr/share/nvm/init-nvm.sh
@@ -136,6 +141,7 @@ alias c='g++ -Wall -Wconversion -Wfatal-errors -g -std=c++14 \
   -fsanitize=undefined,address'
 xmodmap -e 'clear lock' -e 'keycode 66=less greater'
 
+export OPENAI_API_KEY=$(grep -o 'OPENAI_API_KEY=[^ ]*' ~/.env | cut -d= -f2)
 
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
