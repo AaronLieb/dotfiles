@@ -1,0 +1,116 @@
+#!/usr/bin/env bash
+launchctl unload -F /System/Library/LaunchAgents/com.apple.WindowManager.plist
+
+yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
+sudo yabai --load-sa
+
+# General configurations
+yabai -m config                   \
+  debug_output on                 \
+  window_animation_duration 0.0   \
+  window_animation_frame_rate 120 \
+  window_origin_display default   \
+  window_placement second_child   \
+  window_zoom_persist off         \
+  window_shadow float             \
+  window_opacity on               \
+  active_window_opacity 1.0       \
+  normal_window_opacity 0.9       \
+  insert_feedback_color 0xffd75f5f
+
+# Space padding
+yabai -m config     \
+  top_padding    5  \
+  bottom_padding 10 \
+  left_padding   10 \
+  right_padding  10 \
+  window_gap     15 \
+  external_bar all:45:0
+
+DEFAULT_SPACES=6
+NUM_SPACES=$(yabai -m query --spaces | jq length)
+NUM_DISPLAYS=$(yabai -m query --displays | jq length)
+
+# Create spaces
+for (( i = 0 ; i < $((DEFAULT_SPACES-NUM_SPACES)) ; i++ )); do
+  yabai -m space --create
+done
+
+# Remove extra spaces
+for (( i = 0 ; i < $((NUM_SPACES-DEFAULT_SPACES)) ; i++ )); do
+  yabai -m space last --destroy
+done
+
+# Give psuedo indexes to each space using labels
+yabai -m space 1 --label s1
+yabai -m space 2 --label s2
+yabai -m space 3 --label s3
+yabai -m space 4 --label s4
+yabai -m space 5 --label s5
+yabai -m space 6 --label s6
+
+# If a second monitor is present, move certain spaces there
+# TODO: Add a configuration file and monitor setup detection
+# delays are added to prevent weird bugs
+if [[ "$NUM_DISPLAYS" > 1 ]]; then
+yabai -m space s1 --display 1 && sleep 0.7
+yabai -m space s2 --display 2 && sleep 0.7
+yabai -m space s3 --display 2 && sleep 0.7
+yabai -m space s4 --display 1 && sleep 0.7
+yabai -m space s5 --display 1 && sleep 0.7
+yabai -m space s6 --display 2 && sleep 0.7
+fi
+
+# Float rules
+yabai -m rule --add app='^System Information$' manage=off layer=above
+yabai -m rule --add app='^System Preferences$' manage=off layer=above
+yabai -m rule --add title='Preferences' manage=off layer=above
+yabai -m rule --add title='Settings' manage=off layer=above
+yabai -m rule --add title='Help.*Slack' manage=off layer=above
+yabai -m rule --add app='^Cisco AnyConnect Secure Mobility Client$' manage=off
+yabai -m rule --add app='IntelliJ IDEA' title='^$' manage=off
+yabai -m rule --add app='IntelliJ IDEA' title='Project Structure' manage=off
+yabai -m rule --add app='IntelliJ IDEA' title='Preferences' manage=off
+yabai -m rule --add app='IntelliJ IDEA' title='Edit configuration' manage=off
+
+# Sticky rules
+yabai -m rule --add app="^Digital Colou?r Meter$" sticky=on
+
+# 1: Terminals
+yabai -m rule --add app="iTerm2" title!=".*VIM.*" space=s1 # normal terminal
+# 2: Editors
+yabai -m rule --add app="iTerm2" title=".*VIM.*" space=s2 # terminal w/ vim open
+yabai -m rule --add app="Code" space=s2 # VSCode
+yabai -m rule --add app='IntelliJ IDEA' space=s2 # IntelliJ
+# 3: Browser
+yabai -m rule --add app="Google Chrome" space=s3
+# 4: Slack, Discord, Chime
+yabai -m rule --add app="Slack" space=s4
+yabai -m rule --add app="Discord" space=s4
+yabai -m rule --add app=".*[Cc]hime.*" space=s4
+# 5: Spotify
+yabai -m rule --add app="Spotify" space=s5
+# 6: Outlook
+yabai -m rule --add app="Microsoft Outlook" space=s6
+
+# Space layouts
+yabai -m space s1 --layout bsp --balance
+yabai -m space s2 --layout stack
+yabai -m space s3 --layout bsp --balance
+yabai -m space s4 --layout stack
+yabai -m space s5 --layout bsp --balance
+yabai -m space s6 --layout bsp --balance
+
+# Focus each space to apply rules
+yabai -m space --focus s1 && sleep 0.5
+yabai -m space --focus s2 && sleep 0.5
+yabai -m space --focus s3 && sleep 0.5
+yabai -m space --focus s4 && sleep 0.5
+yabai -m space --focus s5 && sleep 0.5
+yabai -m space --focus s6 && sleep 0.5
+
+# When closing a window in a space, refocus the last window in that space
+yabai -m signal --add event=window_destroyed action="yabai -m window --focus recent && yabai -m window --focus recent"
+
+# Restart JankyBorders, SketchyBar, and skhd
+borders

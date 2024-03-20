@@ -1,0 +1,137 @@
+# TODO:
+# Find out why some applications (Outlook, Spotify, Discord) can't be recognized by yabai after restarting
+#  * might be a timinig issue in yabairc
+#  * could be some type of failure I can check for (check yabai -V logs)
+# Reset opacity on sticky window when toggling it
+# Resize sticky window to appropriate size each time it switches displays
+# Fix issue where when creating new space removes label on other space
+# Find out why sketchybar isn't updating when creating new space
+
+######## SHORTCUT HOTKEYS ###########
+
+# Restart yabai, skhd, and sketchybar
+cmd + shift - r :
+      yabai --restart-service && \
+      sleep 5                 && \
+      sketchybar --reload     && \
+      skhd --reload
+
+# Lock the screen
+cmd + ctrl - l : pmset displaysleepnow
+
+# Opens a terminal
+cmd - return : open -n /Applications/iTerm.app
+
+# Opens a browser
+cmd - b : /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome;
+
+# Tight window margins
+ctrl + alt - m :
+sketchybar --bar display=main; \
+  yabai -m config              \
+    top_padding    0           \
+    bottom_padding 0           \
+    left_padding   0           \
+    right_padding  0           \
+    window_gap     5           \
+    external_bar main:38:0;    \
+  pkill borders
+
+# Normal window margins
+ctrl + alt - n :
+  sketchybar --bar display=all;  \
+  yabai -m config                \
+    top_padding    5             \
+    bottom_padding 10            \
+    left_padding   10            \
+    right_padding  10            \
+    window_gap     15            \
+    external_bar all:45:0;       \
+  borders
+
+######## SPACES ###########
+
+# Fullscreen a window
+alt - f : yabai -m window --toggle zoom-fullscreen
+
+# Float a window
+alt + shift - f : yabai -m window --toggle float
+
+# Create a stack space
+alt - t : yabai -m space --layout stack
+
+# Rebalance the space
+alt - b: yabai -m space --layout bsp --balance
+
+# Rotate the windows in the space
+alt - r : yabai -m space --rotate 90
+
+# Focus a space by index
+cmd - 1 : yabai -m space --focus s1
+cmd - 2 : yabai -m space --focus s2
+cmd - 3 : yabai -m space --focus s3
+cmd - 4 : yabai -m space --focus s4
+cmd - 5 : yabai -m space --focus s5
+cmd - 6 : yabai -m space --focus s6
+cmd - 7 : yabai -m space --focus s7
+cmd - 8 : yabai -m space --focus s8
+cmd - 9 : yabai -m space --focus s9
+
+# Move space to another display
+# Consider changing to just yabai -m space --display x --focus
+cmd + alt - 1 : yabai -m space --display 1; yabai -m display --focus 1
+cmd + alt - 2 : yabai -m space --display 2; yabai -m display --focus 2
+cmd + alt - 3 : yabai -m space --display 3; yabai -m display --focus 3
+
+# Destroy a space
+cmd - d : yabai -m space --destroy
+
+# Create a new space
+cmd + shift - return :
+SPACE_NUM=$(($(yabai -m query --spaces | jq length)+1)) && \
+yabai -m space --create && \
+yabai -m space $SPACE_NUM --label "s$SPACE_NUM"
+
+######## WINDOWS ###########
+
+# Overloading stack and directional focus
+cmd - left :
+  yabai -m window --focus stack.prev || \
+  yabai -m window --focus stack.last || \
+  yabai -m window --focus west
+cmd - right :
+  yabai -m window --focus stack.next || \
+  yabai -m window --focus stack.first || \
+  yabai -m window --focus east
+cmd - up : yabai -m window --focus north
+cmd - down : yabai -m window --focus south
+
+# Move a window to a space by index
+cmd + shift - 1 : yabai -m window --space s1 --focus
+cmd + shift - 2 : yabai -m window --space s2 --focus
+cmd + shift - 3 : yabai -m window --space s3 --focus
+cmd + shift - 4 : yabai -m window --space s4 --focus
+cmd + shift - 5 : yabai -m window --space s5 --focus
+cmd + shift - 6 : yabai -m window --space s6 --focus
+cmd + shift - 7 : yabai -m window --space s7 --focus
+cmd + shift - 8 : yabai -m window --space s8 --focus
+cmd + shift - 9 : yabai -m window --space s9 --focus
+
+# Insert new window in position
+alt + ctrl - left : yabai -m window --insert west
+alt + ctrl - up : yabai -m window --insert north
+alt + ctrl - down : yabai -m window --insert south
+alt + ctrl - right : yabai -m window --insert east
+
+######## FLOATING WINDOW ###########
+
+# Create / Destroy the sticky window
+cmd + shift - space : yabai -m window --toggle sticky --grid 4:4:1:1:2:2 --opacity '.85'
+
+# Show / Hide / Focus sticky window 
+cmd - space :
+  CURR=$(yabai -m query --spaces | jq '.[] | select(.["has-focus"] == true) | .index'); \
+  STICKY=$(yabai -m query --windows | jq '.[] | select(.["is-sticky"] == true)'); \
+  if [[ "$(echo $STICKY | jq '.["has-focus"]')" == "true" ]]; then \
+  osascript -e "tell application \"System Events\" to set visible of first application process whose frontmost is true to false"; \
+  else yabai -m window "$(echo $STICKY | jq '.id')" --space $CURR --focus; fi
