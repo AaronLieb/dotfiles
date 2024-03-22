@@ -1,0 +1,51 @@
+{
+	"name": "Vimium C",
+	"@time": "3/22/2024, 9:25:33 AM",
+	"time": 1711124733926,
+	"environment": {
+		"extension": "1.99.994",
+		"platform": "mac",
+		"chromium": 122
+	},
+	"allBrowserUrls": true,
+	"exclusionRules": [
+		{
+			"passKeys": "r ",
+			"pattern": ":https://discord.com/"
+		}
+	],
+	"grabBackFocus": true,
+	"keyLayout": 2,
+	"linkHintCharacters": "fjkdsla;zxcvbnm,.qwertyuiop1234567890-",
+	"nextPatterns": "next,more,newer,>,›,→,»,≫,>>",
+	"previousPatterns": "prev,previous,back,older,<,‹,←,«,≪,<<",
+	"searchEngines": [
+		"sage: https://sage.amazon.dev/search?q=$s Sage",
+		"wiki: https://w.amazon.com/index.php/Special:Search?search=$s AmazonWiki",
+		"is: https://is.amazon.com/search/ALL?q=$s InternalSearch",
+		"admin: https://isengard.amazon.com/federate?account=$s&role=Admin AWSAdmin",
+		"readonly: https://isengard.amazon.com/federate?account=$s&role=ReadOnly AWSReadOnly",
+		""
+	],
+	"showActionIcon": false,
+	"userDefinedCss": [
+		".D>.LH {",
+		" background: none;",
+		" background-color: #feda31; ",
+		" border: 0;",
+		" border-radius: 2px;",
+		" box-shadow: inset 0 -1px 0 #b39922;",
+		" font-size: 11px;",
+		" font-weight: bold;",
+		" text-shadow: none;",
+		" color: #4a400e;",
+		" padding-bottom: 3px;",
+		"}",
+		"",
+		".D>.BH {",
+		" color: #911e16;",
+		"}",
+		""
+	],
+	"vimSync": true
+}
