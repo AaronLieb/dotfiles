@@ -1,18 +1,11 @@
-# TODO:
-# Find out why some applications (Outlook, Spotify, Discord) can't be recognized by yabai after restarting
-#  * might be a timinig issue in yabairc
-#  * could be some type of failure I can check for (check yabai -V logs)
-# Reset opacity on sticky window when toggling it
-# Resize sticky window to appropriate size each time it switches displays
-# Fix issue where when creating new space removes label on other space
-# Find out why sketchybar isn't updating when creating new space
+# Configured for skhd v0.3.9
 
 ######## SHORTCUT HOTKEYS ###########
 
 # Restart yabai, skhd, and sketchybar
 cmd + shift - r :
       yabai --restart-service && \
-      sleep 5                 && \
+      sleep 10                && \
       sketchybar --reload     && \
       skhd --reload
 
@@ -87,10 +80,12 @@ cmd + alt - 3 : yabai -m space --display 3; yabai -m display --focus 3
 cmd - d : yabai -m space --destroy
 
 # Create a new space
+# TODO: Find a way to have sketchybar inherently reload when a new window is created
 cmd + shift - return :
 SPACE_NUM=$(($(yabai -m query --spaces | jq length)+1)) && \
 yabai -m space --create && \
-yabai -m space $SPACE_NUM --label "s$SPACE_NUM"
+yabai -m space $SPACE_NUM --label "s$SPACE_NUM" && \
+sketchybar --reload
 
 ######## WINDOWS ###########
 
@@ -122,16 +117,3 @@ alt + ctrl - left : yabai -m window --insert west
 alt + ctrl - up : yabai -m window --insert north
 alt + ctrl - down : yabai -m window --insert south
 alt + ctrl - right : yabai -m window --insert east
-
-######## FLOATING WINDOW ###########
-
-# Create / Destroy the sticky window
-cmd + shift - space : yabai -m window --toggle sticky --grid 4:4:1:1:2:2 --opacity '.85'
-
-# Show / Hide / Focus sticky window 
-cmd - space :
-  CURR=$(yabai -m query --spaces | jq '.[] | select(.["has-focus"] == true) | .index'); \
-  STICKY=$(yabai -m query --windows | jq '.[] | select(.["is-sticky"] == true)'); \
-  if [[ "$(echo $STICKY | jq '.["has-focus"]')" == "true" ]]; then \
-  osascript -e "tell application \"System Events\" to set visible of first application process whose frontmost is true to false"; \
-  else yabai -m window "$(echo $STICKY | jq '.id')" --space $CURR --focus; fi
