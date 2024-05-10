@@ -7,6 +7,20 @@ return {
     "max397574/better-escape.nvim",
     enabled = false
   },
+  {
+    "nvim-telescope/telescope.nvim",
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    opts = function(_, opts)
+      opts.defaults.path_display = { "smart" }
+      opts.pickers = {
+      lsp_references = {
+          include_declaration = false,
+          show_line = false
+        }
+      }
+      return opts
+    end
+  },
   { -- customize alpha options
     "goolord/alpha-nvim",
     opts = function(_, opts)
@@ -98,7 +112,8 @@ return {
     -- config = function() require'hop'.setup() end,
     keys = {
       { "s", "<cmd>HopChar1<cr>", desc = "Hop to char" }
-    }
+    },
+    config = true
   },
   { -- Register preview (")
     "junegunn/vim-peekaboo",
@@ -136,6 +151,7 @@ return {
   },
   { -- "camelcase and snake case word motions"
     "chaoren/vim-wordmotion",
+    event = "BufEnter",
     keys = {
       { "W", "w", { noremap = true } },
       { "cW", "cw", { noremap = true } },
@@ -153,4 +169,15 @@ return {
     "nacro90/numb.nvim",
     config = true
   },
+  { -- Auto close buffers that didn't get edited
+    'axkirillov/hbac.nvim',
+    event = "BufEnter",
+    keys = {
+      { "<Leader>a", "<cmd>Hbac toggle_pin<cr>", desc = "Toggle pin a buffer" },
+    },
+    opts = {
+      autoclose = true,
+      threshold = 2,
+    }
+  }
 }
