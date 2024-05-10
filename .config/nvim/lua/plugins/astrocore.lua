@@ -29,6 +29,7 @@ return {
         signcolumn = "auto", -- sets vim.opt.signcolumn to auto
         wrap = false, -- sets vim.opt.wrap
         shiftwidth = 2,
+        tabstop = 2,
         foldlevel = 99,
         foldlevelstart = 99,
         foldenable = true,
@@ -61,8 +62,8 @@ return {
         caE = { "cae", noremap = true },
         ciE = { "cie", noremap = true },
         dj = { "J", noremap = true, desc = "Squash lines"},
-        J = { function() require("astrocore.buffer").nav(vim.v.count1) end, desc = "Next buffer" },
-        K = { function() require("astrocore.buffer").nav(-vim.v.count1) end, desc = "Previous buffer" },
+        J = { function() require("astrocore.buffer").nav(-vim.v.count1) end, desc = "Previous buffer" },
+        K = { function() require("astrocore.buffer").nav(vim.v.count1) end, desc = "Next buffer" },
         gu = nil,
         ["<Leader>h"] = { "<cmd>noh<cr>", desc = "No Highlight" },
         ["<Leader>b"] = { desc = "Buffers" },
