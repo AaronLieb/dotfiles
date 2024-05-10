@@ -5,7 +5,7 @@
 # Restart yabai, skhd, and sketchybar
 cmd + shift - r :
       yabai --restart-service && \
-      sleep 10                && \
+      sleep 6                 && \
       sketchybar --reload     && \
       skhd --reload
 
