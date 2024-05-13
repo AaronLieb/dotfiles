@@ -8,9 +8,6 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# CodeWhisperer pre block. Keep at the top of this file.
-[[ -f "${HOME}/Library/Application Support/codewhisperer/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/codewhisperer/shell/zshrc.pre.zsh"
-
 ####################
 # Version Managers #
 ####################
@@ -59,9 +56,8 @@ bindkey '^ ' edit-command-line
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # aliases
-alias v="lvim"
-alias vim="lvim"
-alias nvim="lvim"
+alias v="nvim"
+alias vim="nvim"
 alias cat="bat"
 
 # MacOS notify command
@@ -94,5 +90,7 @@ alias ws="brazil ws"
 alias cdk="brazil-build cdk"
 alias dev="ssh-add --apple-use-keychain -t 72000 && ssh dev-dsk-aarolieb-2c-272fe091.us-west-2.amazon.com"
 
-# CodeWhisperer post block. Keep at the bottom of this file.
-[[ -f "${HOME}/Library/Application Support/codewhisperer/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/codewhisperer/shell/zshrc.post.zsh"
+##############
+# Better cd  #
+##############
+eval "$(zoxide init --cmd cd zsh)"
