@@ -25,6 +25,7 @@ yabai -m config                   \
   window_opacity on               \
   mouse_action1 move              \
   mouse_action2 resize            \
+  mouse_modifier alt              \
   mouse_follows_focus on          \
   focus_follows_mouse autoraise   \
   insert_feedback_color 0xffd75f5f
