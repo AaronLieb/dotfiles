@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Configured for yabai v7.1.0
+# Configured for yabai v7.1.1
 
 launchctl unload -F /System/Library/LaunchAgents/com.apple.WindowManager.plist
 
@@ -99,27 +99,29 @@ yabai -m rule --apply app='IntelliJ IDEA' space=s2 # IntelliJ
 # 3: Browser
 yabai -m rule --add app="Google Chrome" space=s3
 yabai -m rule --apply app="Google Chrome" space=s3
-# 4: Slack, Discord, Chime
+# 4: Slack, Discord
 yabai -m rule --add app="Slack" space=s4
 yabai -m rule --apply app="Slack" space=s4
 yabai -m rule --add app="Discord" space=s4
 yabai -m rule --apply app="Discord" space=s4
-yabai -m rule --add app=".*[Cc]hime.*" space=s4
-yabai -m rule --apply app=".*[Cc]hime.*" space=s4
-# 5: Spotify
+# 5: Spotify & Obsidian
 yabai -m rule --add app="Spotify" space=s5
 yabai -m rule --apply app="Spotify" space=s5
-# 6: Outlook
+yabai -m rule --add app="Obsidian" space=s5
+yabai -m rule --apply app="Obsidian" space=s5
+# 6: Outlook, Chime
 yabai -m rule --add app="Microsoft Outlook" space=s6
 yabai -m rule --apply app="Microsoft Outlook" space=s6
+yabai -m rule --add title=".*Chime.*" space=s6
+yabai -m rule --apply title=".Chime.*" space=s6
 
 # Space layouts
 yabai -m space s1 --layout bsp --balance
 yabai -m space s2 --layout stack
 yabai -m space s3 --layout bsp --balance
 yabai -m space s4 --layout stack
-yabai -m space s5 --layout bsp --balance
-yabai -m space s6 --layout bsp --balance
+yabai -m space s5 --layout stack
+yabai -m space s6 --layout stack
 
 # Focus each space to help apply rules and update sketchybar
 yabai -m space --focus s1 && sleep 0.3
