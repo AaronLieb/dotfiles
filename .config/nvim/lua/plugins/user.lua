@@ -1,5 +1,11 @@
 -- You can also add or configure plugins by creating files in this `plugins/` folder
 
+
+-- TODO: Fix gI not working (maybe just in java?)
+-- Add controls for resizing windows (or find the controls)
+-- fix codewhisperer
+-- change "Y" to copy to system clipboard
+
 ---@type LazySpec
 return {
 
@@ -45,35 +51,6 @@ return {
       return opts
     end,
   },
-  {
-    "windwp/nvim-autopairs",
-    config = function(plugin, opts)
-      require "astronvim.plugins.configs.nvim-autopairs"(plugin, opts) -- include the default astronvim config that calls the setup call
-      -- add more custom autopairs configuration such as custom rules
-      local npairs = require "nvim-autopairs"
-      local Rule = require "nvim-autopairs.rule"
-      local cond = require "nvim-autopairs.conds"
-      npairs.add_rules(
-        {
-          Rule("$", "$", { "tex", "latex" })
-            -- don't add a pair if the next character is %
-            :with_pair(cond.not_after_regex "%%")
-            -- don't add a pair if  the previous character is xxx
-            :with_pair(
-              cond.not_before_regex("xxx", 3)
-            )
-            -- don't move right when repeat character
-            :with_move(cond.none())
-            -- don't delete if the next character is xx
-            :with_del(cond.not_after_regex "xx")
-            -- disable adding a newline when you press <cr>
-            :with_cr(cond.none()),
-        },
-        -- disable for .vim files, but it work for another filetypes
-        Rule("a", "a", "-vim")
-      )
-    end,
-  },
   { -- open & close folds with l & h
     "chrisgrieser/nvim-origami",
     event = "BufReadPost",
@@ -105,15 +82,9 @@ return {
   },
   { -- smooth scroll
     "declancm/cinnamon.nvim",
-    config = true
-  },
-  { -- HopToChar (s)
-    "phaazon/hop.nvim",
-    -- config = function() require'hop'.setup() end,
-    keys = {
-      { "s", "<cmd>HopChar1<cr>", desc = "Hop to char" }
-    },
-    config = true
+    config = function() require'cinnamon'.setup({
+      keymaps = { basic = false }
+    }) end
   },
   { -- Register preview (")
     "junegunn/vim-peekaboo",
@@ -130,7 +101,7 @@ return {
     keys = { "gu", "<cmd>UndotreeToggle<cr>", desc = "UndoTree"}
   },
   { -- Git TUI (,gg)
-    "jesseduffield/lazygit",
+    "kdheepak/lazygit.nvim",
     cmd = {
       "LazyGit",
     	"LazyGitConfig",
@@ -177,7 +148,35 @@ return {
     },
     opts = {
       autoclose = true,
-      threshold = 2,
+      threshold = 4,
     }
+  },
+  {
+    'kwkarlwang/bufjump.nvim'
+  },
+  { -- :GBrowse to open in code.amazon.com
+    url = 'ssh://git.amazon.com:2222/pkg/Vim-code-browse.git',
+    branch = 'mainline',
+    dependencies = 'tpope/vim-fugitive',
+    event = 'VeryLazy',
+  },
+  {
+    "ggandor/leap.nvim",
+    dependencies = 'tpope/vim-repeat',
+    enabled = true,
+    keys = {
+      { "s", mode = { "n", "x", "o" }, desc = "Leap Forward to" },
+      { "S", mode = { "n", "x", "o" }, desc = "Leap Backward to" },
+      { "gs", mode = { "n", "x", "o" }, desc = "Leap from Windows" },
+    },
+    config = function(_, opts)
+      local leap = require("leap")
+      for k, v in pairs(opts) do
+        leap.opts[k] = v
+      end
+      leap.add_default_mappings(true)
+      vim.keymap.del({ "x", "o" }, "x")
+      vim.keymap.del({ "x", "o" }, "X")
+    end,
   }
 }

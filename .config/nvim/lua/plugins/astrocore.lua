@@ -36,6 +36,7 @@ return {
         startofline = true,
         clipboard = '',
         whichwrap = "<,>,[,]",
+        cmdheight = 0
       },
       g = { -- vim.g.<key>
         -- configure global vim variables (vim.g)
@@ -50,9 +51,18 @@ return {
       v = {
         W = { "w", noremap = true },
         iW = { "iw", noremap = true },
+        ["<C-u>"] = { function() require'cinnamon'.scroll("<C-u>") end, desc = "Smooth scroll up"},
+        ["<C-d>"] = { function() require'cinnamon'.scroll("<C-d>") end, desc = "Smooth scroll down" },
+        ["<Leader>y"] = { "\"+y", desc = "Copy to system buffer" },
       },
       -- normal mode
       n = {
+        ["<C-o>"] = { function() require'bufjump'.backward_same_buf() end, desc = "Jump back in buffer" },
+        ["<C-i>"] = { function() require'bufjump'.forward_same_buf() end, desc = "Jump forward in buffer" },
+        -- replace this shit with neoscroll
+        -- ["<C-u>"] = { function() require'cinnamon'.scroll("<C-u>") end, desc = "Smooth scroll up"},
+        -- ["<C-d>"] = { function() require'cinnamon'.scroll("<C-d>") end, desc = "Smooth scroll down" },
+        ["zz"] = { function() require'cinnamon'.scroll("zz") end, desc = "Center viewport on cursor"},
         W = { "w", noremap = true },
         cW = { "cw", noremap = true },
         caW = { "caw", noremap = true },
@@ -62,11 +72,16 @@ return {
         caE = { "cae", noremap = true },
         ciE = { "cie", noremap = true },
         dj = { "J", noremap = true, desc = "Squash lines"},
-        J = { function() require("astrocore.buffer").nav(-vim.v.count1) end, desc = "Previous buffer" },
-        K = { function() require("astrocore.buffer").nav(vim.v.count1) end, desc = "Next buffer" },
-        gu = nil,
+        J = { function() require"astrocore.buffer".nav(-vim.v.count1) end, desc = "Previous buffer" },
+        K = { function() require"astrocore.buffer".nav(vim.v.count1) end, desc = "Next buffer" },
         ["<Leader>h"] = { "<cmd>noh<cr>", desc = "No Highlight" },
         ["<Leader>b"] = { desc = "Buffers" },
+        gb = { "<cmd>GBrowse<cr>", desc = "Go to code in browser" },
+        -- disable some stupid default astronvim keybinds
+        gbc = false,
+        grr = false,
+        gra = false,
+        grn = false,
       },
     },
   },
