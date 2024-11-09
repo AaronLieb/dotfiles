@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Configured for yabai v7.1.1
+# Configured for yabai v7.1.2
 
 launchctl unload -F /System/Library/LaunchAgents/com.apple.WindowManager.plist
 
@@ -86,6 +86,7 @@ yabai -m rule --add app='IntelliJ IDEA' title='Edit configuration' manage=off
 
 # Sticky rules
 yabai -m rule --add app="^Digital Colou?r Meter$" sticky=on
+yabai -m rule --add app='Mac Mouse Fix' title='Mac Mouse Fix' sticky=on
 
 # 1: Terminals
 yabai -m rule --apply app="iTerm2" title!=".*VIM.*" space=s1 # normal terminal
