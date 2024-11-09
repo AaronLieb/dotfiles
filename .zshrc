@@ -26,6 +26,10 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 
+# Golang
+export PATH=$PATH:$(go env GOPATH)/bin
+
+
 #############
 # Oh My Zsh #
 #############
@@ -34,7 +38,7 @@ export NVM_DIR="$HOME/.nvm"
 export ZSH="$HOME/.oh-my-zsh"
 
 # Plugin list: https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins
-plugins=(git aws)
+plugins=(git aws zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -59,6 +63,7 @@ bindkey '^ ' edit-command-line
 alias v="nvim"
 alias vim="nvim"
 alias cat="bat"
+alias lg="lazygit"
 
 # MacOS notify command
 if [[ $(uname) == "Darwin" ]]; then
@@ -76,10 +81,10 @@ fi
 ###################
 
 source /Users/aarolieb/.brazil_completion/zsh_completion
+eval "$(isengardcli shell-profile --keep-prompt)"
 
 export AWS_ACCOUNT="767397721831"
 export PATH="$HOME/.toolbox/bin:$PATH"
-export PATH=$HOME/Code/CWLS/src/CWLS/build/bin:$PATH
 
 alias bb="brazil-build"
 alias bbr="brazil-recursive-cmd"
@@ -89,8 +94,20 @@ alias bbc="brazil-build clean"
 alias ws="brazil ws"
 alias cdk="brazil-build cdk"
 alias dev="ssh-add --apple-use-keychain -t 72000 && ssh dev-dsk-aarolieb-2c-272fe091.us-west-2.amazon.com"
+alias oracle="ssh ubuntu@155.248.212.189 -i ~/.ssh/oracle.pem"
+alias admin="ada credentials update --once --role=Admin --account"
+alias ro="ada credentials update --once --role=ReadOnly --account"
+alias timestamp="date -ujf '%Y-%m-%d %H:%M:%S' +%s "
+alias ts="date -ujf '%Y-%m-%d %H:%M:%S' +%s "
+alias ms="date -ujf '%Y-%m-%d %H:%M:%S' +%s000 "
+alias prettyddb="jq '.Items[] | to_entries | map({(.key): .value | to_entries | .[0].value }) | add'"
 
 ##############
 # Better cd  #
 ##############
 eval "$(zoxide init --cmd cd zsh)"
+
+#######################
+# Custom Autocomplete #
+#######################
+source /Users/aarolieb/Code/goat/autocomplete/zsh_autocomplete
