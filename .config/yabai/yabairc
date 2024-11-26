@@ -15,28 +15,28 @@ yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
 sudo yabai --load-sa
 
 # General configurations
-yabai -m config                   \
-  debug_output on                 \
-  window_animation_duration 0.0   \
-  window_origin_display default   \
-  window_placement second_child   \
-  window_zoom_persist off         \
-  window_shadow float             \
-  window_opacity on               \
-  mouse_action1 move              \
-  mouse_action2 resize            \
-  mouse_modifier alt              \
-  mouse_follows_focus on          \
-  focus_follows_mouse autoraise   \
+yabai -m config \
+  debug_output on \
+  window_animation_duration 0.0 \
+  window_origin_display default \
+  window_placement second_child \
+  window_zoom_persist off \
+  window_shadow float \
+  window_opacity on \
+  mouse_action1 move \
+  mouse_action2 resize \
+  mouse_modifier alt \
+  mouse_follows_focus on \
+  focus_follows_mouse autoraise \
   insert_feedback_color 0xffd75f5f
 
 # Space padding
-yabai -m config     \
-  top_padding    5  \
+yabai -m config \
+  top_padding 5 \
   bottom_padding 10 \
-  left_padding   10 \
-  right_padding  10 \
-  window_gap     15 \
+  left_padding 10 \
+  right_padding 10 \
+  window_gap 15 \
   external_bar all:45:0
 
 DEFAULT_SPACES=6
@@ -44,12 +44,12 @@ NUM_SPACES=$(yabai -m query --spaces | jq length)
 NUM_DISPLAYS=$(yabai -m query --displays | jq length)
 
 # Create spaces
-for (( i = 0 ; i < $((DEFAULT_SPACES-NUM_SPACES)) ; i++ )); do
+for ((i = 0; i < $((DEFAULT_SPACES - NUM_SPACES)); i++)); do
   yabai -m space --create
 done
 
 # Remove extra spaces
-for (( i = 0 ; i < $((NUM_SPACES-DEFAULT_SPACES)) ; i++ )); do
+for ((i = 0; i < $((NUM_SPACES - DEFAULT_SPACES)); i++)); do
   yabai -m space last --destroy
 done
 
@@ -64,12 +64,12 @@ yabai -m space 6 --label s6
 # If a second monitor is present, move certain spaces there
 # TODO: Add a configuration file and monitor setup detection
 if [[ "$NUM_DISPLAYS" > 1 ]]; then
-yabai -m space s1 --display 1
-yabai -m space s2 --display 2
-yabai -m space s3 --display 2
-yabai -m space s4 --display 1
-yabai -m space s5 --display 1
-yabai -m space s6 --display 2
+  yabai -m space s1 --display 1
+  yabai -m space s2 --display 2
+  yabai -m space s3 --display 2
+  yabai -m space s4 --display 1
+  yabai -m space s5 --display 1
+  yabai -m space s6 --display 2
 fi
 
 # Float rules
@@ -89,14 +89,14 @@ yabai -m rule --add app="^Digital Colou?r Meter$" sticky=on
 yabai -m rule --add app='Mac Mouse Fix' title='Mac Mouse Fix' sticky=on
 
 # 1: Terminals
-yabai -m rule --apply app="iTerm2" title!=".*VIM.*" space=s1 # normal terminal
+yabai -m rule --apply app="Kitty" title!=".*VIM.*" space=s1 # normal terminal
 # 2: Editors
-yabai -m rule --add app="iTerm2" title=".*VIM.*" space=s2 # terminal w/ vim open
-yabai -m rule --apply app="iTerm2" title=".*VIM.*" space=s2 # terminal w/ vim open
-yabai -m rule --add app="Code" space=s2 # VSCode
-yabai -m rule --apply app='IntelliJ IDEA' space=s2 # IntelliJ
-yabai -m rule --add app="Code" space=s2 # VSCode
-yabai -m rule --apply app='IntelliJ IDEA' space=s2 # IntelliJ
+yabai -m rule --add app="Kitty" title=".*VIM.*" space=s2   # terminal w/ vim open
+yabai -m rule --apply app="Kitty" title=".*VIM.*" space=s2 # terminal w/ vim open
+yabai -m rule --add app="Code" space=s2                    # VSCode
+yabai -m rule --apply app='IntelliJ IDEA' space=s2         # IntelliJ
+yabai -m rule --add app="Code" space=s2                    # VSCode
+yabai -m rule --apply app='IntelliJ IDEA' space=s2         # IntelliJ
 # 3: Browser
 yabai -m rule --add app="Google Chrome" space=s3
 yabai -m rule --apply app="Google Chrome" space=s3
