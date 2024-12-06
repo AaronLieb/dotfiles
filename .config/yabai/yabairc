@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Configured for yabai v7.1.2
+# Configured for yabai v7.1.5
 
 launchctl unload -F /System/Library/LaunchAgents/com.apple.WindowManager.plist
 
@@ -63,13 +63,13 @@ yabai -m space 6 --label s6
 
 # If a second monitor is present, move certain spaces there
 # TODO: Add a configuration file and monitor setup detection
-if [[ "$NUM_DISPLAYS" > 1 ]]; then
-  yabai -m space s1 --display 1
-  yabai -m space s2 --display 2
+if [[ "$NUM_DISPLAYS" -ne "1" ]]; then
+  yabai -m space s1 --display 2
+  yabai -m space s2 --display 1
   yabai -m space s3 --display 2
   yabai -m space s4 --display 1
-  yabai -m space s5 --display 1
-  yabai -m space s6 --display 2
+  yabai -m space s5 --display 2
+  yabai -m space s6 --display 1
 fi
 
 # Float rules
@@ -89,32 +89,33 @@ yabai -m rule --add app="^Digital Colou?r Meter$" sticky=on
 yabai -m rule --add app='Mac Mouse Fix' title='Mac Mouse Fix' sticky=on
 
 # 1: Terminals
-yabai -m rule --apply app="Kitty" title!=".*VIM.*" space=s1 # normal terminal
-# 2: Editors
-yabai -m rule --add app="Kitty" title=".*VIM.*" space=s2   # terminal w/ vim open
-yabai -m rule --apply app="Kitty" title=".*VIM.*" space=s2 # terminal w/ vim open
-yabai -m rule --add app="Code" space=s2                    # VSCode
-yabai -m rule --apply app='IntelliJ IDEA' space=s2         # IntelliJ
-yabai -m rule --add app="Code" space=s2                    # VSCode
-yabai -m rule --apply app='IntelliJ IDEA' space=s2         # IntelliJ
-# 3: Browser
+yabai -m rule --add app="kitty" space=s1           # normal terminal
+yabai -m rule --apply app="kitty" space=s1         # normal terminal
+yabai -m rule --add app="Code" space=s1            # VSCode
+yabai -m rule --apply app="Code" space=s1          # VSCode
+yabai -m rule --add app='IntelliJ IDEA' space=s1   # IntelliJ
+yabai -m rule --apply app='IntelliJ IDEA' space=s1 # IntelliJ
+# 2: Obsidian
+yabai -m rule --add app="Obsidian" space=s2
+yabai -m rule --apply app="Obsidian" space=s2
+# 2: Browser
 yabai -m rule --add app="Google Chrome" space=s3
 yabai -m rule --apply app="Google Chrome" space=s3
-# 4: Slack, Discord
+# 3: Slack, Discord
 yabai -m rule --add app="Slack" space=s4
 yabai -m rule --apply app="Slack" space=s4
 yabai -m rule --add app="Discord" space=s4
 yabai -m rule --apply app="Discord" space=s4
-# 5: Spotify & Obsidian
-yabai -m rule --add app="Spotify" space=s5
-yabai -m rule --apply app="Spotify" space=s5
-yabai -m rule --add app="Obsidian" space=s5
-yabai -m rule --apply app="Obsidian" space=s5
-# 6: Outlook, Chime
-yabai -m rule --add app="Microsoft Outlook" space=s6
-yabai -m rule --apply app="Microsoft Outlook" space=s6
-yabai -m rule --add title=".*Chime.*" space=s6
-yabai -m rule --apply title=".Chime.*" space=s6
+# 5: Outlook, Chime
+yabai -m rule --add app="Microsoft Outlook" space=s5
+yabai -m rule --apply app="Microsoft Outlook" space=s5
+yabai -m rule --add title=".*Chime.*" space=s5
+yabai -m rule --apply title=".Chime.*" space=s5
+# 6: Spotify, Steam
+yabai -m rule --add app="Spotify" space=s6
+yabai -m rule --apply app="Spotify" space=s6
+yabai -m rule --add app="Steam Helper" space=s6
+yabai -m rule --apply app="Steam Helper" space=s6
 
 # Space layouts
 yabai -m space s1 --layout bsp --balance
