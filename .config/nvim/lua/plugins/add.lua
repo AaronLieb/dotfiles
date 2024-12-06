@@ -41,6 +41,15 @@ return {
     },
   },
   { "rose-pine/neovim", name = "rose-pine" },
+  -- Lua
+  {
+    "folke/zen-mode.nvim",
+    opts = {
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
+    },
+  },
   -- {
   --   -- https://w.amazon.com/bin/view/Barium/
   --   url = "ssh://git.amazon.com/pkg/NinjaHooks.git",
