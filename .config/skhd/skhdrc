@@ -1,25 +1,34 @@
 # Configured for skhd v0.3.9
 
+############# MODES #################
+
+:: default
+:: norebind
+:: zen
+
+default, zen < fn - 1 ; norebind
+norebind < fn - 1 ; default
+
 ######## SHORTCUT HOTKEYS ###########
 
 # Restart yabai, skhd, and sketchybar
-cmd + shift - r :
+default, zen < cmd + shift - r :
       yabai --restart-service && \
       sleep 6                 && \
       sketchybar --reload     && \
       skhd --reload
 
 # Lock the screen
-cmd + ctrl - l : pmset displaysleepnow
+default, zen < cmd + ctrl - l : pmset displaysleepnow
 
 # Opens a terminal
-cmd + shift - return : open -n /Applications/kitty.app
+default, zen < cmd + shift - return : open -n /Applications/kitty.app
 
 # Opens a browser
-cmd + shift - b : /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome;
+default, zen < cmd + shift - b : /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome;
 
 # Tight window margins
-ctrl + alt - m :
+default, zen < ctrl + alt - m :
 sketchybar --bar display=main; \
   yabai -m config              \
     top_padding    0           \
@@ -31,7 +40,7 @@ sketchybar --bar display=main; \
   pkill borders
 
 # Normal window margins
-ctrl + alt - n :
+default, zen < ctrl + alt - n :
   sketchybar --bar display=all;  \
   yabai -m config                \
     top_padding    5             \
@@ -45,39 +54,42 @@ ctrl + alt - n :
 ######## SPACES ###########
 
 # Fullscreen a window
-alt - f : yabai -m window --toggle zoom-fullscreen
+default, zen < alt - f : yabai -m window --toggle zoom-fullscreen
 
 # Float a window
-alt + shift - f : yabai -m window --toggle float
+default, zen < alt + shift - f : yabai -m window --toggle float
 
 # Create a stack space
-alt - t : yabai -m space --layout stack
+default, zen < alt - t : yabai -m space --layout stack
 
 # Rebalance the space
-alt - b: yabai -m space --layout bsp --balance
+default, zen < alt - b: yabai -m space --layout bsp --balance
 
 # Rotate the windows in the space
-alt - r : yabai -m space --rotate 90
+default, zen < alt - r : yabai -m space --rotate 90
+
+# Find fullscreen window
+default, zen < cmd - 0 : yabai -m space --focus $(yabai -m query --spaces | jq 'map(select(."is-native-fullscreen" == true)) | .[0].index')
 
 # Focus a space by index
-cmd - 1 : yabai -m space --focus s1
-cmd - 2 : yabai -m space --focus s2
-cmd - 3 : yabai -m space --focus s3
-cmd - 4 : yabai -m space --focus s4
-cmd - 5 : yabai -m space --focus s5
-cmd - 6 : yabai -m space --focus s6
-cmd - 7 : yabai -m space --focus s7
-cmd - 8 : yabai -m space --focus s8
-cmd - 9 : yabai -m space --focus s9
+default, zen < cmd - 1 : yabai -m space --focus s1
+default, zen < cmd - 2 : yabai -m space --focus s2
+default, zen < cmd - 3 : yabai -m space --focus s3
+default, zen < cmd - 4 : yabai -m space --focus s4
+default, zen < cmd - 5 : yabai -m space --focus s5
+default, zen < cmd - 6 : yabai -m space --focus s6
+default, zen < cmd - 7 : yabai -m space --focus s7
+default, zen < cmd - 8 : yabai -m space --focus s8
+default, zen < cmd - 9 : yabai -m space --focus s9
 
 # Move space to another display
 # Consider changing to just yabai -m space --display x --focus
-cmd + alt - 1 : yabai -m space --display 1; yabai -m display --focus 1
-cmd + alt - 2 : yabai -m space --display 2; yabai -m display --focus 2
-cmd + alt - 3 : yabai -m space --display 3; yabai -m display --focus 3
+default, zen < cmd + alt - 1 : yabai -m space --display 1; yabai -m display --focus 1
+default, zen < cmd + alt - 2 : yabai -m space --display 2; yabai -m display --focus 2
+default, zen < cmd + alt - 3 : yabai -m space --display 3; yabai -m display --focus 3
 
 # Destroy a space
-cmd + shift - d : yabai -m space --destroy
+default, zen < cmd + shift - d : yabai -m space --destroy
 
 # Create a new space
 # TODO: Find a way to have sketchybar inherently reload when a new window is created
@@ -88,62 +100,147 @@ cmd + shift - d : yabai -m space --destroy
 # yabai -m space $SPACE_NUM --label "s$SPACE_NUM" && \
 # sketchybar --reload
 
+default, zen < ctrl + alt - t : sketchybar --bar hidden=false
+default, zen < ctrl + alt - f : sketchybar --bar hidden=true
+
+##### Zen mode #####
+
+default < ctrl + alt - z ; zen
+zen < ctrl + alt - f ; default
+
+zen < cmd + shift - f: \
+for i in $(seq 1 3); do \
+  SPACE="s$i"; \
+  WINDOW=$(yabai -m query --spaces | jq '.[] | select(.label == "'"$SPACE"'") | .windows[0]'); \
+  yabai -m window "$WINDOW" --toggle native-fullscreen && sleep 0.5; \
+  NEW_SPACE=$(yabai -m query --windows | jq '.[] | select(.id == "'"$WINDOW"'") | .index'); \
+  yabai -m space $NEW_SPACE --label $SPACE; \
+done; \
+spotify stop; \
+skhd -k "ctrl + cmd - d"; \
+skhd -k "ctrl + alt - z"; \
+
+default < cmd + shift - f: \
+spotify play uri spotify:playlist:6GLuvfdlzPmXhwN4NXprVO; \
+for i in $(seq 1 3); do \
+  SPACE="s$i"; \
+  WINDOW=$(yabai -m query --spaces | jq '.[] | select(.label == "'"$SPACE"'") | .windows[0]'); \
+  yabai -m window "$WINDOW" --toggle native-fullscreen && sleep 0.5; \
+  NEW_SPACE=$(yabai -m query --windows | jq '.[] | select(.id == "'"$WINDOW"'") | .index'); \
+  yabai -m space $NEW_SPACE --label $SPACE; \
+done; \
+yabai -m space --focus s1; \
+skhd -k "ctrl + cmd - d"; \
+skhd -k "ctrl + alt - z"; \
+
 ######## WINDOWS ###########
 
 # Overloading stack and directional focus
-cmd - left :
+default, zen < cmd - left :
   yabai -m window --focus stack.prev || \
   yabai -m window --focus stack.last || \
   yabai -m window --focus west
-cmd - right :
+default, zen < cmd - right :
   yabai -m window --focus stack.next || \
   yabai -m window --focus stack.first || \
   yabai -m window --focus east
- cmd - 0x32 :
+default, zen <  cmd - 0x32 :
    yabai -m window --focus stack.next || \
    yabai -m window --focus stack.first || \
    yabai -m window --focus east
-cmd - up : yabai -m window --focus north
-cmd - down : yabai -m window --focus south
+default, zen < cmd - up : yabai -m window --focus north
+default, zen < cmd - down : yabai -m window --focus south
 
 # Move a window to a space by index
-cmd + shift - 1 : yabai -m window --space s1 --focus
-cmd + shift - 2 : yabai -m window --space s2 --focus
-cmd + shift - 3 : yabai -m window --space s3 --focus
-cmd + shift - 4 : yabai -m window --space s4 --focus
-cmd + shift - 5 : yabai -m window --space s5 --focus
-cmd + shift - 6 : yabai -m window --space s6 --focus
-cmd + shift - 7 : yabai -m window --space s7 --focus
-cmd + shift - 8 : yabai -m window --space s8 --focus
-cmd + shift - 9 : yabai -m window --space s9 --focus
+default, zen < cmd + shift - 1 : yabai -m window --space s1 --focus
+default, zen < cmd + shift - 2 : yabai -m window --space s2 --focus
+default, zen < cmd + shift - 3 : yabai -m window --space s3 --focus
+default, zen < cmd + shift - 4 : yabai -m window --space s4 --focus
+default, zen < cmd + shift - 5 : yabai -m window --space s5 --focus
+default, zen < cmd + shift - 6 : yabai -m window --space s6 --focus
+default, zen < cmd + shift - 7 : yabai -m window --space s7 --focus
+default, zen < cmd + shift - 8 : yabai -m window --space s8 --focus
+default, zen < cmd + shift - 9 : yabai -m window --space s9 --focus
 
 # Insert new window in position
-alt + ctrl - left : yabai -m window --insert west
-alt + ctrl - up : yabai -m window --insert north
-alt + ctrl - down : yabai -m window --insert south
-alt + ctrl - right : yabai -m window --insert east
+default, zen < alt + ctrl - left : yabai -m window --insert west
+default, zen < alt + ctrl - up : yabai -m window --insert north
+default, zen < alt + ctrl - down : yabai -m window --insert south
+default, zen < alt + ctrl - right : yabai -m window --insert east
 
 # Right Cmd + hjkl for arrow keys
-rcmd - h: skhd -k "left"
-rcmd - j: skhd -k "down"
-rcmd - k: skhd -k "up"
-rcmd - l: skhd -k "right"
+default, zen < rcmd - h : skhd -k "left"
+default, zen < rcmd - j : skhd -k "down"
+default, zen < rcmd - k : skhd -k "up"
+default, zen < rcmd - l : skhd -k "right"
+
+###### GLOBAL REBINDS ######
+# These are innefficient,
+# Check if https://github.com/koekeishiya/skhd/pull/254 is merged in the future
+
+# Should I change this to shift + cmd + num?
+default, zen < ctrl - 1 : skhd -k "fn - 1" ; skhd -k "cmd - 1" ; skhd -k "fn - 1"
+default, zen < ctrl - 2 : skhd -k "fn - 1" ; skhd -k "cmd - 2" ; skhd -k "fn - 1"
+default, zen < ctrl - 3 : skhd -k "fn - 1" ; skhd -k "cmd - 3" ; skhd -k "fn - 1"
+default, zen < ctrl - 4 : skhd -k "fn - 1" ; skhd -k "cmd - 4" ; skhd -k "fn - 1"
+default, zen < ctrl - 5 : skhd -k "fn - 1" ; skhd -k "cmd - 5" ; skhd -k "fn - 1"
+default, zen < ctrl - 6 : skhd -k "fn - 1" ; skhd -k "cmd - 6" ; skhd -k "fn - 1"
+default, zen < ctrl - 7 : skhd -k "fn - 1" ; skhd -k "cmd - 7" ; skhd -k "fn - 1"
+default, zen < ctrl - 8 : skhd -k "fn - 1" ; skhd -k "cmd - 8" ; skhd -k "fn - 1"
+default, zen < ctrl - 9 : skhd -k "fn - 1" ; skhd -k "cmd - 9" ; skhd -k "fn - 1"
 
 ###### APPLICATION SPECIFIC HOTKEYS ######
 
-# Slack
-
-ctrl - o [
-  "Slack": skhd -k "cmd - 0x21" # cmd + [
+# History Back
+default, zen < cmd - h [
+  "Slack" : skhd -k "cmd - 0x21" # cmd + [
+  "Discord" : skhd -k "cmd - 0x21" # cmd + [
   * ~
 ]
 
-ctrl - i [
-  "Slack": skhd -k "cmd - 0x1E" # cmd + ]
+# History Forward
+default, zen < cmd - l [
+  "Slack" : skhd -k "cmd - 0x1E" # cmd + ]
+  "Discord" : skhd -k "cmd - 0x21" # cmd + [
   * ~
 ]
 
-cmd - o [
-  "Slack": skhd -k "cmd - k"
+# Omnisearch
+default, zen < cmd - o [
+  "Slack" : skhd -k "fn - 1" ; skhd -k "cmd - k" ; skhd -k "fn - 1"
+  "Discord" : skhd -k "fn - 1" ; skhd -k "cmd - k" ; skhd -k "fn - 1"
+  * ~
+]
+
+# Navigate Left/Down
+default, zen < cmd - j [
+  "Discord" : skhd -k "alt - down"
+  "Slack" : skhd -k "alt - down"
+  * ~
+]
+
+default, zen < cmd + shift - j [
+  "Discord" : skhd -k "alt + shift - down"
+  "Slack" : skhd -k "alt + shift - down"
+  * ~
+]
+
+# Navigate Right/Up
+default, zen < cmd - k [
+  "Discord" : skhd -k "alt - up"
+  "Slack" : skhd -k "alt - up"
+  * ~
+]
+
+default, zen < cmd + shift - k [
+  "Discord" : skhd -k "alt + shift - up"
+  "Slack" : skhd -k "alt + shift - up"
+  * ~
+]
+
+# Misc
+default, zen < cmd - 0x29 [ # cmd + ;
+  "Google Chrome" : skhd -k "cmd + shift - a" && skhd -k "return"
+  "Discord" :  skhd -k "cmd + alt - right"
   * ~
 ]
