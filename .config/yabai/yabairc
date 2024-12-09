@@ -32,7 +32,7 @@ yabai -m config \
 
 # Space padding
 yabai -m config \
-  top_padding 5 \
+  top_padding 0 \
   bottom_padding 10 \
   left_padding 10 \
   right_padding 10 \
@@ -61,14 +61,25 @@ yabai -m space 4 --label s4
 yabai -m space 5 --label s5
 yabai -m space 6 --label s6
 
-# If a second monitor is present, move certain spaces there
 # TODO: Add a configuration file and monitor setup detection
-if [[ "$NUM_DISPLAYS" -ne "1" ]]; then
+#
+# If a second monitor is present, move certain spaces there
+if [[ "$NUM_DISPLAYS" -eq "2" ]]; then
   yabai -m space s1 --display 2
   yabai -m space s2 --display 1
   yabai -m space s3 --display 2
   yabai -m space s4 --display 1
   yabai -m space s5 --display 2
+  yabai -m space s6 --display 1
+fi
+
+# If a third monitor is present, move certain spaces there
+if [[ "$NUM_DISPLAYS" -eq "3" ]]; then
+  yabai -m space s1 --display 2
+  yabai -m space s2 --display 1
+  yabai -m space s3 --display 3
+  yabai -m space s4 --display 2
+  yabai -m space s5 --display 3
   yabai -m space s6 --display 1
 fi
 
