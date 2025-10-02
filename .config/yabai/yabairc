@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Configured for yabai v7.1.5
+# Configured for yabai v7.1.15
 
 launchctl unload -F /System/Library/LaunchAgents/com.apple.WindowManager.plist
 
@@ -8,7 +8,17 @@ launchctl unload -F /System/Library/LaunchAgents/com.apple.WindowManager.plist
 defaults write com.apple.dock autohide -bool true
 defaults write com.apple.dock autohide-delay -float 1 # Takes 1 second for dock to show up
 defaults write com.apple.dock no-bouncing -bool TRUE
-killall Dock
+defaults write com.apple.dock "autohide-time-modifier" -float "0.25"
+defaults write com.apple.dock "tilesize" -int "36"
+defaults write com.apple.dock "mineffect" -string "scale"
+# killall Dock
+
+# launchctl unload -F /System/Library/LaunchAgents/com.apple.Dock.plist
+# launchctl load -F /System/Library/LaunchAgents/com.apple.Dock.plist
+
+# Menubar Settings
+defaults write .GlobalPreferences _HIHideMenuBar -bool TRUE
+# killall Finder
 
 # Load the yabai scripting addition (must add  yabai to sudoers first, check yabai docs)
 yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
@@ -27,8 +37,10 @@ yabai -m config \
   mouse_action2 resize \
   mouse_modifier alt \
   mouse_follows_focus on \
-  focus_follows_mouse autoraise \
-  insert_feedback_color 0xffd75f5f
+  focus_follows_mouse off \
+  insert_feedback_color 0xffd75f5f \
+  active_window_opacity 1.0 \
+  normal_window_opacity 0.9
 
 # Space padding
 yabai -m config \
@@ -61,6 +73,9 @@ yabai -m space 4 --label s4
 yabai -m space 5 --label s5
 yabai -m space 6 --label s6
 
+# Sometimes it takes time for a space to get labelled
+sleep 0.2
+
 # TODO: Add a configuration file and monitor setup detection
 #
 # If a second monitor is present, move certain spaces there
@@ -90,14 +105,19 @@ yabai -m rule --add title='Preferences' manage=off
 yabai -m rule --add title='Settings' manage=off
 yabai -m rule --add title='Help.*Slack' manage=off
 yabai -m rule --add app='^Cisco AnyConnect Secure Mobility Client$' manage=off
+yabai -m rule --add app='Cisco Secure Client' manage=off
 yabai -m rule --add app='IntelliJ IDEA' title='^$' manage=off
 yabai -m rule --add app='IntelliJ IDEA' title='Project Structure' manage=off
 yabai -m rule --add app='IntelliJ IDEA' title='Preferences' manage=off
 yabai -m rule --add app='IntelliJ IDEA' title='Edit configuration' manage=off
+yabai -m rule --add app='ACME' manage=off
+yabai -m rule --add app='Todoist' title='Todoist' layer='above' is-sticky='true' manage=off
 
 # Sticky rules
 yabai -m rule --add app="^Digital Colou?r Meter$" sticky=on
 yabai -m rule --add app='Mac Mouse Fix' title='Mac Mouse Fix' sticky=on
+yabai -m rule --add app='System Settings' sticky=on
+yabai -m rule --add app='Minus' sticky=on
 
 # 1: Terminals
 yabai -m rule --add app="kitty" space=s1           # normal terminal
@@ -109,6 +129,10 @@ yabai -m rule --apply app='IntelliJ IDEA' space=s1 # IntelliJ
 # 2: Obsidian
 yabai -m rule --add app="Obsidian" space=s2
 yabai -m rule --apply app="Obsidian" space=s2
+yabai -m rule --add app="Todoist" space=s2
+yabai -m rule --apply app="Todoist" space=s2
+yabai -m rule --add app="TickTick" space=s2
+yabai -m rule --apply app="TickTick" space=s2
 # 2: Browser
 yabai -m rule --add app="Google Chrome" space=s3
 yabai -m rule --apply app="Google Chrome" space=s3
@@ -122,6 +146,8 @@ yabai -m rule --add app="Microsoft Outlook" space=s5
 yabai -m rule --apply app="Microsoft Outlook" space=s5
 yabai -m rule --add title=".*Chime.*" space=s5
 yabai -m rule --apply title=".Chime.*" space=s5
+yabai -m rule --add title=".*[Zz]oom.*" space=s5
+yabai -m rule --apply title=".*[Zz]oom.*" space=s5
 # 6: Spotify, Steam
 yabai -m rule --add app="Spotify" space=s6
 yabai -m rule --apply app="Spotify" space=s6
@@ -129,7 +155,7 @@ yabai -m rule --add app="Steam Helper" space=s6
 yabai -m rule --apply app="Steam Helper" space=s6
 
 # Space layouts
-yabai -m space s1 --layout bsp --balance
+yabai -m space s1 --layout stack
 yabai -m space s2 --layout stack
 yabai -m space s3 --layout bsp --balance
 yabai -m space s4 --layout stack
@@ -137,15 +163,12 @@ yabai -m space s5 --layout stack
 yabai -m space s6 --layout stack
 
 # Focus each space to help apply rules and update sketchybar
-yabai -m space --focus s1 && sleep 0.3
-yabai -m space --focus s2 && sleep 0.3
-yabai -m space --focus s3 && sleep 0.3
-yabai -m space --focus s4 && sleep 0.3
-yabai -m space --focus s5 && sleep 0.3
 yabai -m space --focus s6 && sleep 0.3
+yabai -m space --focus s5 && sleep 0.3
+yabai -m space --focus s4 && sleep 0.3
+yabai -m space --focus s3 && sleep 0.3
+yabai -m space --focus s2 && sleep 0.3
+yabai -m space --focus s1
 
 # When closing a window in a space, refocus the last window in that space
 yabai -m signal --add event=window_destroyed action="yabai -m window --focus recent && yabai -m window --focus recent"
-
-# Restart JankyBorders
-borders
