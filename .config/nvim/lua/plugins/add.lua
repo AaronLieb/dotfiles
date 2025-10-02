@@ -30,33 +30,33 @@ return {
     version = "*",
     event = "VeryLazy",
   },
-  {
-    "rcasia/neotest-java",
-    ft = "java",
-    dependencies = {
-      "mfussenegger/nvim-jdtls",
-      "mfussenegger/nvim-dap",
-      "rcarriga/nvim-dap-ui",
-      "theHamsta/nvim-dap-virtual-text",
-    },
-  },
+  -- {
+  --   "rcasia/neotest-java",
+  --   ft = "java",
+  --   dependencies = {
+  --     "mfussenegger/nvim-jdtls",
+  --     "mfussenegger/nvim-dap",
+  --     "rcarriga/nvim-dap-ui",
+  --     "theHamsta/nvim-dap-virtual-text",
+  --   },
+  -- },
   { "rose-pine/neovim", name = "rose-pine" },
+  -- Auto closes when there are too many tabs open
+  -- {
+  --   'axkirillov/hbac.nvim',
+  --   config = true,
+  -- },
+  -- Peak lines lines when using `:<num>`
+  {
+    "nacro90/numb.nvim",
+    config = function()
+      require("numb").setup()
+    end,
+  },
   -- Lua
   {
-    "folke/zen-mode.nvim",
-    opts = {
-      -- your configuration comes here
-      -- or leave it empty to use the default settings
-      -- refer to the configuration section below
-    },
+    url = "ssh://git.amazon.com:2222/pkg/VimBrazilConfig",
+    branch = "mainline",
+    ft = "brazil-config",
   },
-  -- {
-  --   -- https://w.amazon.com/bin/view/Barium/
-  --   url = "ssh://git.amazon.com/pkg/NinjaHooks.git",
-  --   branch = "mainline",
-  --   config = function(self)
-  --     local brazil_config = self.dir .. "/configuration/vim/amazon/brazil-config"
-  --     vim.opt.runtimepath:append(brazil_config)
-  --   end,
-  -- },
 }
