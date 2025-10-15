@@ -25,27 +25,14 @@ cmd + shift - return : open -n /Applications/kitty.app
 # Opens a browser
 cmd + shift - b : /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome;
 
+# Window Margins
+.define set_margins : sketchybar --bar display={{1}}; yabai -m config top_padding {{2}} bottom_padding {{3}} left_padding {{4}} right_padding {{5}} window_gap {{6}} external_bar {{1}}:{{7}}:0;
+
 # Tight window margins
-ctrl + alt - m :
-sketchybar --bar display=main; \
-  yabai -m config              \
-    top_padding    0           \
-    bottom_padding 0           \
-    left_padding   0           \
-    right_padding  0           \
-    window_gap     5           \
-    external_bar main:38:0;    \
+ctrl + alt - m : @set_margins("main", "0", "0", "0", "0", "5", "32")
 
 # Normal window margins
-ctrl + alt - n :
-  sketchybar --bar display=all;  \
-  yabai -m config                \
-    top_padding    5             \
-    bottom_padding 10            \
-    left_padding   10            \
-    right_padding  10            \
-    window_gap     15            \
-    external_bar all:45:0;       \
+ctrl + alt - n : @set_margins("all", "0", "10", "10", "10", "15", "45")
 
 ######## SPACES ###########
 
@@ -64,11 +51,7 @@ alt - b: yabai -m space --layout bsp --balance
 # Rotate the windows in the space
 alt - r : yabai -m space --rotate 90
 
-# Find fullscreen window
-cmd - 0 : yabai -m space --focus $(yabai -m query --spaces | jq 'map(select(."is-native-fullscreen" == true)) | .[0].index')
-
 # Focus a space by index
-
 .define focus_space : yabai -m space --focus s{{1}}
 
 cmd - 1 : @focus_space("1")
@@ -84,7 +67,7 @@ cmd - 9 : @focus_space("9")
 # Move space to another display
 # Consider changing to just yabai -m space --display x --focus
 
-.define move_display : yabai -m space --display {{1}}; yabai -m display --focus {{1}}
+.define move_display : yabai -m space --display {{1}} --focus
 cmd + alt - 1 : @move_display("1")
 cmd + alt - 2 : @move_display("2")
 cmd + alt - 3 : @move_display("3")
@@ -92,17 +75,10 @@ cmd + alt - 3 : @move_display("3")
 # Destroy a space
 cmd + shift - d : yabai -m space --destroy
 
-# Create a new space
-# TODO: Find a way to have sketchybar inherently reload when a new window is created
-#
-# cmd + shift - return :
-# SPACE_NUM=$(($(yabai -m query --spaces | jq length)+1)) && \
-# yabai -m space --create && \
-# yabai -m space $SPACE_NUM --label "s$SPACE_NUM" && \
-# sketchybar --reload
-
 ctrl + alt - t : sketchybar --bar hidden=false
 ctrl + alt - f : sketchybar --bar hidden=true
+
+ctrl + alt - i : sketchybar --bar height=30
 
 ##### Zen mode #####
 
@@ -135,6 +111,9 @@ ctrl + alt - f : sketchybar --bar hidden=true
 # skhd -k "fn - 2"; \
 
 ######## WINDOWS ###########
+
+# Find fullscreen window
+cmd - 0 : yabai -m space --focus $(yabai -m query --spaces | jq 'map(select(."is-native-fullscreen" == true)) | .[0].index')
 
 # Overloading stack and directional focus
 cmd - left :
@@ -179,10 +158,6 @@ rcmd - k | up
 rcmd - l | right
 
 ###### GLOBAL REBINDS ######
-# These are innefficient,
-# Check if https://github.com/koekeishiya/skhd/pull/254 is merged in the future
-
-# Should I change this to shift + cmd + num?
 ctrl - 1 | cmd - 1
 ctrl - 2 | cmd - 2
 ctrl - 3 | cmd - 3
