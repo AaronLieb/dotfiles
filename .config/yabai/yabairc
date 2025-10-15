@@ -171,4 +171,6 @@ yabai -m space --focus s2 && sleep 0.3
 yabai -m space --focus s1
 
 # When closing a window in a space, refocus the last window in that space
-yabai -m signal --add event=window_destroyed action="yabai -m window --focus recent && yabai -m window --focus recent"
+# yabai -m signal --add event=window_destroyed action="yabai -m window --focus recent && yabai -m window --focus recent"
+
+yabai -m signal --add event=space_changed action="nohup open -g raycast://extensions/krzysztoff1/yabai/screens-menu-bar?launchType=background > /dev/null 2>&1 &"
