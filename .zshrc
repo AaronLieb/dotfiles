@@ -20,7 +20,7 @@ plugins=(git aws zsh-syntax-highlighting)
 source $ZSH/oh-my-zsh.sh
 
 # Oh My Posh
-eval "$(oh-my-posh init zsh)"
+eval "$(oh-my-posh init zsh --config ~/.config/oh-my-posh/config.json)"
 
 
 ############
@@ -41,6 +41,8 @@ alias vim="nvim"
 alias cat="bat"
 alias lg="lazygit"
 alias kiro="kiro-cli"
+alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+alias lgconfig='lazygit --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 
 ###################
 # Amazon Specific #
@@ -111,6 +113,3 @@ export CPATH="/opt/homebrew/include"
 
 # mise
 eval "$(mise activate zsh)"
-
-## dotfiles git
-alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
