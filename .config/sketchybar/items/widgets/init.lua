@@ -1,0 +1,6 @@
+require("items.widgets.battery")
+require("items.widgets.volume")
+require("items.widgets.wifi")
+require("items.widgets.slack")
+require("items.widgets.discord")
+-- require("items.widgets.cpu")

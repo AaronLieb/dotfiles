@@ -1,0 +1,9 @@
+customcommands:
+  - key: 'c'
+    context: 'commits'
+    command: 'cr --open'
+    subprocess: true
+    showoutput: true
+    loadingtext: 'creating code review'
+    description: 'create code review'
+    outputtitle: 'code review'

@@ -1,0 +1,107 @@
+# Configured for skhd.zig v0.0.13-b014a29
+
+.shell "/bin/dash"
+
+############# MODES #################
+
+:: default
+
+######## SHORTCUT HOTKEYS ###########
+
+# Restart yabai, skhd, and sketchybar
+cmd + shift - r :
+      yabai --restart-service && \
+      sleep 6                 && \
+      skhd --reload
+
+# Lock the screen
+cmd + ctrl - l : pmset displaysleepnow
+
+# Opens a browser
+cmd + shift - b : /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome;
+
+######## SPACES ###########
+
+# Fullscreen a window
+alt - f : yabai -m window --toggle zoom-fullscreen
+
+# Float a window
+alt + shift - f : yabai -m window --toggle float
+
+# Create a stack space
+alt - t : yabai -m space --layout stack
+
+# Rebalance the space
+alt - b: yabai -m space --layout bsp --balance
+
+# Rotate the windows in the space
+alt - r : yabai -m space --rotate 90
+
+# Focus a space by index
+.define focus_space : yabai -m space --focus {{1}}
+
+cmd - 1 : @focus_space("1")
+cmd - 2 : @focus_space("2")
+cmd - 3 : @focus_space("3")
+cmd - 4 : @focus_space("4")
+cmd - 5 : @focus_space("5")
+cmd - 6 : @focus_space("6")
+cmd - 7 : @focus_space("7")
+cmd - 8 : @focus_space("8")
+cmd - 9 : @focus_space("9")
+
+
+# Destroy a space
+cmd + shift - d : yabai -m space --destroy
+
+######## WINDOWS ###########
+
+# Find fullscreen window
+cmd - 0 : yabai -m space --focus $(yabai -m query --spaces | jq 'map(select(."is-native-fullscreen" == true)) | .[0].index')
+
+# Overloading stack and directional focus
+cmd - left :
+  yabai -m window --focus stack.prev || \
+  yabai -m window --focus stack.last || \
+  yabai -m window --focus west
+cmd - right :
+  yabai -m window --focus stack.next || \
+  yabai -m window --focus stack.first || \
+  yabai -m window --focus east
+cmd - 0x32 :
+   yabai -m window --focus stack.next || \
+   yabai -m window --focus stack.first || \
+   yabai -m window --focus east
+cmd - up : yabai -m window --focus north
+cmd - down : yabai -m window --focus south
+
+# Move a window to a space by index
+
+.define move_space : yabai -m window --space {{1}}
+
+cmd + shift - 1 : @move_space("1")
+cmd + shift - 2 : @move_space("2")
+cmd + shift - 3 : @move_space("3")
+cmd + shift - 4 : @move_space("4")
+cmd + shift - 5 : @move_space("5")
+cmd + shift - 6 : @move_space("6")
+cmd + shift - 7 : @move_space("7")
+cmd + shift - 8 : @move_space("8")
+cmd + shift - 9 : @move_space("9")
+
+# Insert new window in position
+alt + ctrl - left : yabai -m window --insert west
+alt + ctrl - up : yabai -m window --insert north
+alt + ctrl - down : yabai -m window --insert south
+alt + ctrl - right : yabai -m window --insert east
+
+###### GLOBAL REBINDS ######
+ctrl - 1 | cmd - 1
+ctrl - 2 | cmd - 2
+ctrl - 3 | cmd - 3
+ctrl - 4 | cmd - 4
+ctrl - 5 | cmd - 5
+ctrl - 6 | cmd - 6
+ctrl - 7 | cmd - 7
+ctrl - 8 | cmd - 8
+ctrl - 9 | cmd - 9
