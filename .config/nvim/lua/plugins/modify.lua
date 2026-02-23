@@ -3,52 +3,33 @@
 -- PARTIAL OVERWRITE : Set opts to a function that doesn't return
 -- Docs: https://lazy.folke.io/spec
 
-local lint_progress = function()
-  local linters = require("lint").get_running()
-  if #linters == 0 then
-    return "󰦕"
-  end
-  return "󱉶 " .. table.concat(linters, ", ")
-end
-
 return {
   { -- LSP keymaps
     "neovim/nvim-lspconfig",
-    opts = function(_, opts)
-      local lspconfig = require("lspconfig")
-      local configs = require("lspconfig.configs")
-      vim.filetype.add({
-        filename = {
-          ["Config"] = function()
-            vim.b.brazil_package_Config = 1
-            return "brazil-config"
-          end,
-        },
-      })
-      if not configs.barium then
-        configs.barium = {
-          default_config = {
-            cmd = { "barium" },
-            filetypes = { "brazil-config" },
-            root_dir = function(fname)
-              return vim.fs.dirname(vim.fs.find(".git", { path = fname, upward = true })[1])
-            end,
-            settings = {},
-          },
-        }
-      end
-      lspconfig.barium.setup({})
-
-      opts.inlay_hints = { enabled = false }
-      local keys = require("lazyvim.plugins.lsp.keymaps").get()
-      keys[#keys + 1] = { "K", false }
-      keys[#keys + 1] = {
-        "<S-space>",
-        function()
-          vim.lsp.buf.hover()
+    opts = {
+      inlay_hints = {
+        enabled = false,
+      },
+      setup = {
+        jdtls = function()
+          return true
         end,
-      }
-    end,
+      },
+      servers = {
+        jdtls = {},
+        ["*"] = {
+          keys = {
+            { "K", false },
+            {
+              "<S-space>",
+              function()
+                vim.lsp.buf.hover()
+              end,
+            },
+          },
+        },
+      },
+    },
   },
   { -- linting
     "mfussenegger/nvim-lint",
@@ -83,8 +64,14 @@ return {
   {
     "folke/snacks.nvim",
     opts = {
+      image = {
+        setup = true,
+      },
       scroll = {
         enabled = false,
+      },
+      statuscolumn = {
+        enabled = true,
       },
       picker = {
         exclude = {
@@ -245,5 +232,14 @@ return {
       require("which-key.config").add(marks.mappings)
       require("which-key").setup(opts)
     end,
+  },
+  {
+    "stevearc/conform.nvim",
+    opts = {
+      formatters_by_ft = {
+        html = { "prettier" },
+        ruby = { "rubocop" },
+      },
+    },
   },
 }
