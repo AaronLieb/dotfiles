@@ -80,6 +80,11 @@ ctrl + alt - f : sketchybar --bar hidden=true
 
 ctrl + alt - i : sketchybar --bar height=30
 
+# Close a window
+cmd + alt - d : yabai -m window --close
+
+
+
 ##### Zen mode #####
 
 # default < fn - 2 ; zen
