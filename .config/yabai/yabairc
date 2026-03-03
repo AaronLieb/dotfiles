@@ -112,6 +112,7 @@ yabai -m rule --add app='IntelliJ IDEA' title='Preferences' manage=off
 yabai -m rule --add app='IntelliJ IDEA' title='Edit configuration' manage=off
 yabai -m rule --add app='ACME' manage=off
 yabai -m rule --add app='Todoist' title='Todoist' layer='above' is-sticky='true' manage=off
+yabai -m rule --add app='Microsoft Outlook' title='*.Reminder*.' manage=off
 
 # Sticky rules
 yabai -m rule --add app="^Digital Colou?r Meter$" sticky=on
