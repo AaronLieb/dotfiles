@@ -35,13 +35,43 @@ return {
     "mfussenegger/nvim-lint",
     opts = {
       linters = {
-        checkstyle = {
-          config_file = "/Users/aarolieb/Code/Fargate/TaskRetirementManager/src/FargateTaskRetirementManager/build/private/tmp/brazil-path/[FargateCheckstyleBuildLogic-1.0]pkg.runtimefarm/checkstyle/checkstyle_rules.xml",
+        brazil_checkstyle = {
+          cmd = "brazil-build",
+          stdin = false,
+          stream = "stderr",
+          append_fname = false,
+          args = {
+            "checkstyleFile",
+            function()
+              return "-PfilePath=" .. vim.fn.expand("%:p")
+            end,
+          },
+          ignore_exitcode = true,
+          parser = function(output, _, _)
+            local diagnostics = {}
+            for line in output:gmatch("[^\r\n]+") do
+              local file, lnum, col, message = line:match("%[ant:checkstyle%] %[ERROR%] (.+):(%d+):(%d+): (.+)%.")
+              if not file then
+                file, lnum, message = line:match("%[ant:checkstyle%] %[ERROR%] (.+):(%d+): (.+)%.")
+                col = "1"
+              end
+              if file and lnum then
+                table.insert(diagnostics, {
+                  lnum = tonumber(lnum) - 1,
+                  col = tonumber(col) - 1,
+                  severity = vim.diagnostic.severity.ERROR,
+                  message = message,
+                  source = "checkstyle",
+                })
+              end
+            end
+            return diagnostics
+          end,
         },
       },
-      -- linters_by_ft = {
-      --   java = { "checkstyle" },
-      -- },
+      linters_by_ft = {
+        java = { "brazil_checkstyle" },
+      },
     },
   },
   { -- cmp keymaps
