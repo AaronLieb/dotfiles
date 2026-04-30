@@ -159,4 +159,41 @@ return {
   {
     "rshkarin/mason-nvim-lint",
   },
+  {
+    "kwkarlwang/bufjump.nvim",
+    keys = {
+      {
+        "<C-o>",
+        function()
+          require("bufjump").backward()
+        end,
+        desc = "Jump Back",
+        mode = { "n" },
+      },
+      {
+        "<C-i>",
+        function()
+          require("bufjump").forward()
+        end,
+        desc = "Jump Forward",
+        mode = { "n" },
+      },
+      {
+        "<C-p>",
+        function()
+          require("bufjump").backward_same_buf()
+        end,
+        desc = "Jump Back Same Buffer",
+        mode = { "n" },
+      },
+      {
+        "<C-u>",
+        function()
+          require("bufjump").forward_same_buf()
+        end,
+        desc = "Jump Forward Same Buffer",
+        mode = { "n" },
+      },
+    },
+  },
 }
