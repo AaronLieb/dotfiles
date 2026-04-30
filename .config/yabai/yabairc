@@ -24,6 +24,9 @@ defaults write .GlobalPreferences _HIHideMenuBar -bool TRUE
 yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
 sudo yabai --load-sa
 
+# Unfullscreen all windows
+yabai -m query --windows | jq 'map(select(."is-native-fullscreen" == true) | .id) | .[]' | xargs -I{} yabai -m window {} --toggle native-fullscreen
+
 # General configurations
 yabai -m config \
   debug_output on \
@@ -173,5 +176,4 @@ yabai -m space --focus s1
 
 # When closing a window in a space, refocus the last window in that space
 # yabai -m signal --add event=window_destroyed action="yabai -m window --focus recent && yabai -m window --focus recent"
-
 yabai -m signal --add event=space_changed action="nohup open -g raycast://extensions/krzysztoff1/yabai/screens-menu-bar?launchType=background > /dev/null 2>&1 &"

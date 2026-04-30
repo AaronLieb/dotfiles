@@ -6,6 +6,7 @@
 
 :: default : sketchybar -m --bar color=0xff232136
 :: picker @ : sketchybar -m --bar color=0xff233036
+:: zen : sketchybar -m --bar color=0xff402136
 
 ######## SHORTCUT HOTKEYS ###########
 
@@ -14,7 +15,7 @@ cmd + shift - r :
       yabai --restart-service && \
       sleep 6                 && \
       sketchybar --reload     && \
-      skhd --reload
+      skhd --restart-service
 
 # Lock the screen
 cmd + ctrl - l : pmset displaysleepnow
@@ -26,13 +27,19 @@ cmd + shift - return : open -n /Applications/kitty.app
 cmd + shift - b : /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome;
 
 # Window Margins
-.define set_margins : sketchybar --bar display={{1}}; yabai -m config top_padding {{2}} bottom_padding {{3}} left_padding {{4}} right_padding {{5}} window_gap {{6}} external_bar {{1}}:{{7}}:0;
+.define set_margins :
+  sketchybar --bar display={{1}}; yabai -m config top_padding {{2}} bottom_padding {{3}} left_padding {{4}} right_padding {{5}} window_gap {{6}} external_bar {{1}}:{{7}}:0; \
+  /usr/libexec/PlistBuddy -c "set AllSpacesAndDisplays:Desktop:Content:Choices:0:Files:0:relative file:///System/Library/Desktop Pictures/{{8}}" ~/Library/Application\ Support/com.apple.wallpaper/Store/Index.plist && killall WallpaperAgent; \
+  sketchybar --bar hidden={{9}}
 
 # Tight window margins
-ctrl + alt - m : @set_margins("main", "0", "0", "0", "0", "5", "32")
+ctrl + alt - m : @set_margins("main", "0", "0", "0", "0", "5", "32", "Solid Colors/Black.png", "false")
 
 # Normal window margins
-ctrl + alt - n : @set_margins("all", "0", "10", "10", "10", "15", "45")
+ctrl + alt - n : @set_margins("all", "0", "10", "10", "10", "15", "45", "Sonoma.heic", "false")
+
+ctrl + alt - t : sketchybar --bar hidden=false
+ctrl + alt - f : @set_margins("main", "0", "0", "0", "0", "5", "32", "Solid Colors/Black.png", "true")
 
 ######## SPACES ###########
 
@@ -53,6 +60,10 @@ alt - r : yabai -m space --rotate 90
 
 # Focus a space by index
 .define focus_space : yabai -m space --focus s{{1}}
+.define focus_space_and_window : yabai -m space -- focus s{{1}} && yabai -m window --focus $(yabai -m query --windows | jq 'map(select(.app == "{{2}}"))[0].id')
+.define pick : yabai -m window --focus "$(yabai -m query --windows | jq 'map(select(.{{1}} == "{{2}}"))[0].id')"
+.define pick_and_key : yabai -m window --focus "$(yabai -m query --windows | jq 'map(select(.{{1}} == "{{2}}")).[0].id')" && skhd -k "{{3}}"
+.define pick_and_key2 : yabai -m window --focus "$(yabai -m query --windows | jq 'map(select(.{{1}} == "{{2}}")).[0].id')" && skhd -k "{{3}}" && skhd -k "{{4}}"
 
 cmd - 1 : @focus_space("1")
 cmd - 2 : @focus_space("2")
@@ -64,10 +75,8 @@ cmd - 7 : @focus_space("7")
 cmd - 8 : @focus_space("8")
 cmd - 9 : @focus_space("9")
 
-# Move space to another display
-# Consider changing to just yabai -m space --display x --focus
-
 .define move_display : yabai -m space --display {{1}} --focus
+
 cmd + alt - 1 : @move_display("1")
 cmd + alt - 2 : @move_display("2")
 cmd + alt - 3 : @move_display("3")
@@ -75,45 +84,11 @@ cmd + alt - 3 : @move_display("3")
 # Destroy a space
 cmd + shift - d : yabai -m space --destroy
 
-ctrl + alt - t : sketchybar --bar hidden=false
-ctrl + alt - f : sketchybar --bar hidden=true
-
-ctrl + alt - i : sketchybar --bar height=30
-
 # Close a window
 cmd + alt - d : yabai -m window --close
 
-
-
-##### Zen mode #####
-
-# default < fn - 2 ; zen
-# zen < fn - 2 ; default
-#
-# zen < ctrl + alt - z: \
-# for i in $(seq 1 3); do \
-#   SPACE="s$i"; \
-#   WINDOW=$(yabai -m query --spaces | jq '.[] | select(.label == "'"$SPACE"'") | .windows[0]'); \
-#   yabai -m window "$WINDOW" --toggle native-fullscreen && sleep 0.5; \
-#   NEW_SPACE=$(yabai -m query --windows | jq '.[] | select(.id == "'"$WINDOW"'") | .index'); \
-#   yabai -m space $NEW_SPACE --label $SPACE; \
-# done; \
 # spotify stop; \
-# skhd -k "ctrl + cmd - d"; \
-# skhd -k "fn - 2"; \
-#
-# default < ctrl + alt - z: \
-# spotify play uri spotify:playlist:6GLuvfdlzPmXhwN4NXprVO; \
-# for i in $(seq 1 3); do \
-#   SPACE="s$i"; \
-#   WINDOW=$(yabai -m query --spaces | jq '.[] | select(.label == "'"$SPACE"'") | .windows[0]'); \
-#   yabai -m window "$WINDOW" --toggle native-fullscreen && sleep 0.5; \
-#   NEW_SPACE=$(yabai -m query --windows | jq '.[] | select(.id == "'"$WINDOW"'") | .index'); \
-#   yabai -m space $NEW_SPACE --label $SPACE; \
-# done; \
-# yabai -m space --focus s1; \
-# skhd -k "ctrl + cmd - d"; \
-# skhd -k "fn - 2"; \
+# spotify play uri spotify:playlist:6GLuvfdlzPmXhwN4NXprVO;
 
 ######## WINDOWS ###########
 
@@ -195,6 +170,7 @@ lcmd - o [
   "Discord" | cmd - k
   "Todoist" | cmd - k
   "Spotify" | cmd - k
+  "Google Chrome" | cmd + shift - a
   * ~
 ]
 
@@ -245,32 +221,28 @@ cmd - d ; picker
 
 picker < escape ; default
 
-.define pick : yabai -m window --focus "$(yabai -m query --windows | jq 'map(select(.app == "{{1}}")) | .[0].id')"
-.define pick_and_key : yabai -m window --focus "$(yabai -m query --windows | jq 'map(select(.app == "{{1}}")) | .[0].id')" && skhd -k "{{2}}"
+picker < f ;       default : @pick("app", "kitty")
+picker < cmd - f ; default : @pick("app", "kitty")
 
-picker < f ;       default : @pick("kitty")
-picker < cmd - f ; default : @pick("kitty")
+picker < g ;       default : @pick("app", "Google Chrome")
+picker < cmd - g ; default : @pick("app", "Google Chrome")
 
-picker < g ;       default : @pick("Google Chrome")
-picker < cmd - g ; default : @pick("Google Chrome")
+picker < s ;       default : @pick("app", "Slack")
+picker < cmd - s ; default : @pick("app", "Slack")
 
-picker < s ;       default : @pick("Slack")
-picker < cmd - s ; default : @pick("Slack")
+picker < d ;       default : @pick("app", "Discord")
+picker < cmd - d ; default : @pick("app", "Discord")
 
-picker < d ;       default : @pick("Discord")
-picker < cmd - d ; default : @pick("Discord")
+picker < e ;       default : @pick_and_key("app", "Microsoft Outlook", "ctrl - 1")
+picker < cmd - e ; default : @pick_and_key("app", "Microsoft Outlook", "ctrl - 1")
+picker < c ;       default : @pick_and_key2("app", "Microsoft Outlook", "ctrl - 2", "cmd - t")
+picker < cmd - c ; default : @pick_and_key2("app", "Microsoft Outlook", "ctrl - 2", "cmd - t")
 
-picker < e ;       default : @pick_and_key("Microsoft Outlook", "ctrl - 1")
-picker < cmd - e ; default : @pick_and_key("Microsoft Outlook", "ctrl - 1")
-picker < c ;       default : @pick_and_key("Microsoft Outlook", "ctrl - 2")
-picker < cmd - c ; default : @pick_and_key("Microsoft Outlook", "ctrl - 2")
+picker < a ;       default : @pick("app", "Obsidian")
+picker < cmd - a ; default : @pick("app", "Obsidian")
 
-picker < a ;       default : @pick("Obsidian")
-picker < cmd - a ; default : @pick("Obsidian")
+picker < v ;       default : @pick("title", "Zoom Meeting")
+picker < cmd - v ; default : @pick("title", "Zoom Meeting")
 
-picker < v ;       default : @pick("Amazon Chime")
-picker < cmd - v ; default : @pick("Amazon Chime")
-
-picker < t ;       default : @pick("TickTick")
-picker < cmd - t ; default : @pick("TickTick")
-
+picker < t ;       default : @pick("app", "TickTick")
+picker < cmd - t ; default : @pick("app", "TickTick")
